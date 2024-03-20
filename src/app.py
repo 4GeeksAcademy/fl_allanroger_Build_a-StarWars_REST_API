@@ -1,6 +1,3 @@
-"""
-This module takes care of starting the API Server, Loading the DB and Adding the endpoints
-"""
 import os
 from flask import Flask, request, jsonify, url_for
 from flask_migrate import Migrate
@@ -26,18 +23,17 @@ db.init_app(app)
 CORS(app)
 setup_admin(app)
 
-# Handle/serialize errors like a JSON object
+
 @app.errorhandler(APIException)
 def handle_invalid_usage(error):
     return jsonify(error.to_dict()), error.status_code
 
-# generate sitemap with all your endpoints
+
 @app.route('/')
 def sitemap():
     return generate_sitemap(app)
 
-# USERS ENDPOINTS
-# -----------------------------------Get All Users--------------------------------
+# -----------------------------------All Users--------------------------------
 @app.route('/users', methods=['GET'])
 def get_users():
     users = User.query.all()
@@ -50,7 +46,7 @@ def get_users():
 
 
 # FAVORITES ENDPOINTS
-# -----------------------------------Get All Favorites of a User--------------------------------
+# -----------------------------------Favorites of a User--------------------------------
 @app.route('/users/<int:user_id>/favorites', methods=['GET'])
 def get_favorites(user_id):
     user = User.query.get(user_id)
@@ -118,7 +114,7 @@ def delete_favorite(user_id, id, type):
         return jsonify({'error':f'Favorite {type} not found'}), 404
 
 
-# CHARACTERS ENDPOINTS
+
 # -----------------------------------Get All Characters--------------------------------
 @app.route('/characters', methods=['GET'])
 def get_characters():
@@ -140,7 +136,7 @@ def get_character(character_id):
     else:
         return jsonify(character.serialize()), 200
 
-# -----------------------------------Add a Character--------------------------------
+# -----------------------------------Character--------------------------------
 @app.route('/characters', methods=['POST'])
 def add_character():
     body = request.get_json()
